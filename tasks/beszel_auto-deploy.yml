@@ -1,0 +1,71 @@
+# auto-deploy tasks file for dbrennand.beszel
+- name: beszel_auto_deploy | Assert beszel_hub_url is set
+  ansible.builtin.assert:
+    that: beszel_hub_url != ""
+    fail_msg: Provide a Beszel Hub URL to be used by the Beszel binary agent.
+
+- name: beszel_auto_deploy | Assert beszel_domain is set
+  ansible.builtin.assert:
+    that: beszel_domain != ""
+    fail_msg: Provide a domain to be used by the Beszel binary agent.
+
+- name: beszel_auto_deploy | Assert beszel_api_token is set
+  ansible.builtin.assert:
+    that: beszel_api_token != ""
+    fail_msg: Provide an API token to be used by the Beszel binary agent.
+
+- name: beszel_auto_deploy | Assert beszel_users is set
+  ansible.builtin.assert:
+    that: beszel_users | length > 0
+    fail_msg: Provide at least one user ID to be used by the Beszel binary agent.
+
+- name: beszel_auto_deploy | Get hostname
+  ansible.builtin.command: hostname
+  register: hostname
+
+- name: beszel_auto_deploy | Initialize system_exists
+  set_fact:
+    system_exists: false
+
+- name: beszel_auto_deploy | Check if system already exists in PocketBase
+  ansible.builtin.uri:
+    url: "{{ beszel_hub_url }}/api/collections/systems/records?filter=(host='{{ hostname.stdout }}.{{ beszel_domain }}')"
+    headers:
+      Authorization: "Bearer {{ beszel_api_token }}"
+    body_format: json
+    return_content: yes
+    status_code: 200
+  register: beszel_response
+
+- name: beszel_auto_deploy | Set system_exists fact
+  set_fact:
+    system_exists: true
+  when: beszel_response.json.totalItems | int > 0
+
+- name: beszel_auto_deploy | Send msg if system already exists
+  debug:
+    msg: "System '{{ hostname.stdout }}.{{ beszel_domain }}' already exists!"
+  when: system_exists == true
+
+- name: beszel_auto_deploy | End host if system already exists
+  ansible.builtin.meta: end_host
+  when: system_exists == true
+
+- name: beszel_auto_deploy | Request an Beszel API
+  uri:
+    url: "{{ beszel_hub_url }}/api/collections/systems/records"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ beszel_api_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "{{ hostname.stdout }}"
+      host: "{{ hostname.stdout }}.{{ beszel_domain }}"
+      port: "{{ beszel_port | string }}"
+      users: "{{ beszel_users }}"
+    status_code: 200
+    return_content: yes
+    validate_certs: yes
+  register: beszel_response
+  when: system_exists == false

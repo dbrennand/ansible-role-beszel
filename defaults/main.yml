@@ -6,6 +6,8 @@ _beszel_states:
   - absent
 # State of the Beszel binary agent installation
 beszel_state: present
+# Whether to fully automatically deploy the Beszel binary agent
+beszel_auto_deploy: false
 # Version of the Beszel binary agent to install
 # Can be a specific version from GitHub (e.g., v0.9.1)
 beszel_version: latest
@@ -25,3 +27,15 @@ beszel_service_enabled: true
 beszel_service_state: started
 # Extra filesystems to be monitored by the Beszel binary agent
 beszel_extra_filesystems: []
+# -- Just needed if beszel_auto_deploy is true --
+# URL to the Beszel Hub - https://beszel.example.com
+beszel_hub_url: ""
+# Domain to register the Beszel binary agent with - example.com
+beszel_domain: ""
+# List of users to register with the Beszel binary agent
+# This should match the user IDs in the Beszel Hub
+beszel_users:
+  - ""
+# API token for the Beszel Hub
+beszel_api_token: ""
+

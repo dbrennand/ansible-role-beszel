@@ -4,6 +4,14 @@
   ansible.builtin.assert:
     that: beszel_state in _beszel_states
 
+- name: Assert | beszel_auto_deploy
+  ansible.builtin.assert:
+    that: beszel_auto_deploy in [true, false]
+
+- name: Include auto-deploy tasks
+  ansible.builtin.include_tasks: beszel_auto-deploy.yml
+  when: beszel_auto_deploy == true
+
 - name: Include state tasks
   ansible.builtin.import_tasks:
     file: "beszel_{{ beszel_state }}.yml"
