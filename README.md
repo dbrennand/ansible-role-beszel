@@ -24,6 +24,12 @@ beszel_state: present
 State of the Beszel binary agent installation. Can be either `present` or `absent`.
 
 ```yaml
+beszel_auto_deploy: false
+```
+When `beszel_auto_deploy` is enabled, the Beszel agent is installed automatically across multiple machines, allowing new systems to be provisioned for monitoring without manual steps. Note: Currently, automatic deployment supports only FQDNs, not IP addresses.
+Indicates whether the Beszel agent should be deployed using the fully automatic method. Set to `true` to enable automatic deployment; otherwise, manual steps be required.
+
+```yaml
 beszel_version: latest
 ```
 
@@ -75,6 +81,30 @@ beszel_service_state: started
 ```
 
 State of the Beszel binary agent systemd service.
+
+```yaml
+beszel_hub_url: ""
+```
+
+Set the beszel hub url. For example: `https://beszel.example.com`
+
+```yaml
+beszel_domain: ""
+```
+
+Set the domain that your servers use. For example: `example.com`
+
+```yaml
+beszel_users:
+  - ""
+```
+
+List the Beszel user IDs to which the systems should be attached.
+
+```yaml
+beszel_api_token: ""
+```
+Set the API token for the Beszel Hub. To obtain the token, log in as a superuser and open your browser's developer tools. In local storage, locate the key `__pb_superuser_auth__`—its value is the API token. Note: This token is time-limited; you can inspect its expiration at [jwt.io](https://jwt.io).
 
 ## Dependencies
 
