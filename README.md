@@ -5,6 +5,10 @@
 
 Ansible role to install and configure a [Beszel](https://github.com/henrygd/beszel) binary agent.
 
+> [!IMPORTANT]
+> This Ansible role has been migrated to the [`community.beszel`](https://github.com/ansible-collections/community.beszel) Ansible Collection.
+> This Ansible role will continue to function but all future development work will be included in the collection.
+
 ## Requirements
 
 None.
