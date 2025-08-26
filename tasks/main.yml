@@ -7,3 +7,9 @@
 - name: Include state tasks
   ansible.builtin.import_tasks:
     file: "beszel_{{ beszel_state }}.yml"
+
+- name: Role Deprecation | Migrate to community.beszel
+  delegate_to: localhost
+  run_once: true
+  ansible.builtin.debug:
+    msg: "{{ 'This Ansible role has been migrated to the community.beszel Ansible collection.\nPlease review the collection and migrate to receive further updates.\nhttps://github.com/ansible-collections/community.beszel' | print_warn }}" # noqa: yaml[line-length]
